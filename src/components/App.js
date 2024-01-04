@@ -19,7 +19,9 @@ function App() {
 
   const [contacts, setContacts] = useState([]);
   const [editName, setEditName] = useState('');
-  const [editEmail, setEditEmail] = useState('')
+  const [editEmail, setEditEmail] = useState('');
+  const [search, setSearch] = useState('');
+  const [searchResult, setSearchResult] = useState('')
 
   useEffect(()=>{
     const fetchData = async()=>{
@@ -80,6 +82,20 @@ function App() {
     window.location.href = "/";
   };
 
+  const searchHandler = (searchTerm)=>{
+    setSearch(searchTerm)
+    if(searchTerm !== ""){
+      const newContactList = contacts.filter((contact)=>{
+        return Object.values(contact)
+        .join("")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      });
+      setSearchResult(newContactList)
+    }else{
+      setSearchResult(contacts);
+    }
+  }
   
 
   /* useEffect(() => {
@@ -100,7 +116,7 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route exact path="/" element={<ContactList contacts={contacts} removeContact={removeContact} />} />
+          <Route exact path="/" element={<ContactList contacts={search.length < 1? contacts: searchResult} search={search} searchHandler={searchHandler} removeContact={removeContact} />} />
           <Route path="/add" element={<AddContact addContactHandler={addContactHandler} handleNavigation={handleNavigation} />} />
           <Route path="/detail/:id" element={<Detail handleNavigation={handleNavigation} />} />
           <Route path="/delete/:id" element={<Delete  removeContact={removeContact} handleNavigation={handleNavigation} />} />
